@@ -44,7 +44,7 @@ module.exports = function childrenOfPid(pid, callback) {
     // See also: https://github.com/nodejs/node-v0.x-archive/issues/2318
     processLister = spawn('wmic.exe', ['PROCESS', 'GET', 'Name,ProcessId,ParentProcessId,Status']);
   } else {
-    processLister = spawn('ps', ['-A', '-o', 'ppid,pid,stat,comm']);
+    processLister = spawn('ps', ['-A', '-o', '%mem,%cpu,ppid,pid,stat,command']);
   }
 
   es.connect(
@@ -111,6 +111,12 @@ function normalizeHeader(str) {
       break;
     case 'Status':
       return 'STAT';
+      break;
+    case '%CPU':
+      return 'CPU';
+      break;
+    case '%MEM':
+      return 'MEM';
       break;
     default:
       throw new Error('Unknown process listing header: ' + str);
